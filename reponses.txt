@@ -1,10 +1,11 @@
-Question 4:
-La connection est refusée pour le second client. En effet le serveur est programmé pour ne recevoir qu'une seul connection client et une fois que celle ci est réalisé le programme est bloqué sur l'envoi de message au client connecté. Pour réaliser une seconde connection sur le serveur il faudrait probablement créer un nouveau processus a chaque nouvelle connection d'un client.
+Question 1:
+Aucun problème, le serveur se quitte puis se relance correctement.
 
 Question 2:
-La connection est établie avec le serveur puis le client est automatiquement déconnecté.
+La connection est établie avec le serveur puis le client est automatiquement déconnecté et le serveur est éteint.
 
 Question 3:
-La connection est refusée
+La connection est refusée.
 
-Question 1:
+Question 4:
+La connection est refusée pour le second client. En effet le serveur est programmé pour ne recevoir qu'une seule connection client et une fois que celle ci est réalisé le programme est bloqué sur l'envoi de message au client connecté. Pour réaliser une seconde connection sur le serveur il faudrait probablement créer un nouveau processus à chaque nouvelle connection d'un client.
