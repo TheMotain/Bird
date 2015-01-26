@@ -33,8 +33,7 @@ int main()
 	{
 	  write(socket_client, buf, size);
 	}
-      write(socket_client, buf, size);
-      printf("Client déconnecté\n");
+      printf("Client dÃ©connectÃ©\n");
     }
   return 0;
 }
