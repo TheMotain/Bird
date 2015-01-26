@@ -46,6 +46,7 @@ int main()
 	  }
 	close(socket_client);
 	printf("Client déconnecté\n");
+	exit(0);
       }
     }
   return 0;
