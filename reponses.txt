@@ -1,5 +1,5 @@
 Question 1:
-Aucun problème, le serveur se quitte puis se relance correctement.
+Quand on quitte le serveur avec Ctrl+C quand un client est connecté, on ne peut le relancer de suite à cause d'une erreur "bind" l'adresse étant déjà utilisé.
 
 Question 2:
 La connection est établie avec le serveur puis le client est automatiquement déconnecté et le serveur est éteint.
