@@ -7,12 +7,12 @@
 
 #ifndef __SOCKET_H__
 #define __SOCKET_H__
-/** CrÃ©e une socket serveur qui Ã©coute sur toute les interfaces IPv4
-    de la machine sur le port passÃ© en paramÃ¨tre. La socket retournÃ©e
-    doit pouvoir Ãªtre utilisÃ©e directeurment par un appel Ã  accept.
+/** Crée une socket serveur qui écoute sur toute les interfaces IPv4
+    de la machine sur le port passé en paramètre. La socket retournée
+    doit pouvoir être utilisée directeurment par un appel à accept.
 
     La fonction retourne -1 en cas d'erreur ou le descripteur de la
-    socket crÃ©Ã©e. */
+    socket créée. */
 
 int creer_serveur(int port);
 
