@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 
 #ifndef __SOCKET_H__
 #define __SOCKET_H__

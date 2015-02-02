@@ -11,12 +11,16 @@ int main()
   int socket_client;
   int socket_serveur;
   int pid;
+  /*struct sockaddr_in s_c_addr;*/
   socket_serveur = creer_serveur(8080);
   initialiser_signaux();
   while(1)
     {
-      printf("Attente de connexion\n");
-      socket_client = accept(socket_serveur, NULL, NULL);
+      printf("\n\nAttente de connexion\n");
+      socket_client = accept(socket_serveur,NULL/*(struct sockaddr *) &s_c_addr*/, NULL);
+      printf("Connection client\n");
+      /*printf("Adresse : %s\n",inet_ntoa(s_c_addr.sin_addr));
+	printf("Port : %d\n",s_c_addr.sin_port);*/
       if(socket_client == -1)
 	{
 	  perror("accept");

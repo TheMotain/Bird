@@ -1,5 +1,6 @@
 #include "socket.h"
 
+
 int creer_serveur(int port)
 {
   int socket_serveur;
@@ -47,6 +48,6 @@ int configureBind(int* socket_serveur,struct sockaddr_in* saddr){
 
 void afficherInfoServeur(struct sockaddr_in saddr){
   printf("Serveur Connecte\n");
-  printf("Adresse: %s\n",saddr.sin_addr.s_addr);
-  printf("Port: %s\n",saddr.sin_port);
+  printf("Adresse: %s\n",inet_ntoa(saddr.sin_addr));
+  printf("Port: %d\n",saddr.sin_port);
 }
