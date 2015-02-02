@@ -45,12 +45,17 @@ int main()
 }
 
 void dialogueClient(int socket_client,char buf[]){
-  sleep(1);
-  write(socket_client, message, sizeof(message));
-  int size;
-  while((size = read(socket_client, buf, sizeof(buf))) > 0)
+  FILE * file;
+  if((file = fdopen(socket_client,(const char *) "w+")) == NULL)
     {
-      write(socket_client, buf, size);
+      perror("fdopen");
+      exit(-1);
+    }
+  sleep(1);
+  fprintf(file,message);
+  while(fgets(buf,sizeof(buf),file) != NULL)
+    {
+      fprintf(file,"<Bird> %s",buf);
     }
   close(socket_client);
   printf("\nClient deconnecte\n");

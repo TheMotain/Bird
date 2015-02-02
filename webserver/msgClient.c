@@ -7,6 +7,7 @@ void initialiser_signaux(void)
   if(signal(SIGPIPE,SIG_IGN) == SIG_ERR)
     {
       perror("signal");
+      exit(-1);
     }
  
   sa.sa_handler = traitement_signal;
@@ -15,6 +16,7 @@ void initialiser_signaux(void)
   if(sigaction(SIGCHLD, &sa, NULL) == -1)
     {
       perror("sigaction(SIGCHLD)");
+      exit(-1);
     }
 }
 
