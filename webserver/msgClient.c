@@ -27,7 +27,7 @@ void traitement_signal(int sig)
 }
 
 
-int controlClientRequest(char * buf)
+/*int controlClientRequest(char * buf)
 {
   int i;
   int start;
@@ -54,7 +54,7 @@ int controlClientRequest(char * buf)
       return -1;
     }
   return 0;
-}
+  }*/
 
 void sendErrorRequest(FILE * file)
 {
@@ -63,4 +63,11 @@ void sendErrorRequest(FILE * file)
   fprintf(file,"Content-Length: 17\r\n");
   fprintf(file,"\r\n");
   fprintf(file,"400 Bad Request\r\n");
+}
+
+void detailClient(struct sockaddr_in addr,int id)
+{
+  printf("Adresse : %s\n",inet_ntoa(addr.sin_addr));
+  printf("Port : %d\n",addr.sin_port);
+  printf("ID Client : %d\n",id);
 }
