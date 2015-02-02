@@ -9,3 +9,7 @@ void initialiser_signaux(void);
 void traitement_signal(int sig);
 
 void dialogueClient(int socket_client);
+
+int controlClientRequest(char * buf);
+
+void sendErrorRequest(FILE * file);
