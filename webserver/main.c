@@ -11,21 +11,22 @@ int main()
   int socket_client;
   int socket_serveur;
   int pid;
-  /*struct sockaddr_in s_c_addr;*/
+  struct sockaddr_in s_c_addr;
+  socklen_t len = sizeof(s_c_addr);
   socket_serveur = creer_serveur(8080);
   initialiser_signaux();
   while(1)
     {
-      printf("\n\nAttente de connexion\n");
-      socket_client = accept(socket_serveur,NULL/*(struct sockaddr *) &s_c_addr*/, NULL);
+      printf("\nAttente de connexion\n");
+      socket_client = accept(socket_serveur,(struct sockaddr *) &s_c_addr, &len);
       printf("Connection client\n");
-      /*printf("Adresse : %s\n",inet_ntoa(s_c_addr.sin_addr));
-	printf("Port : %d\n",s_c_addr.sin_port);*/
       if(socket_client == -1)
 	{
 	  perror("accept");
 	  return 0;
 	}
+      printf("Adresse : %s\n",inet_ntoa(s_c_addr.sin_addr));
+      printf("Port : %d\n",s_c_addr.sin_port);
       if((pid = fork()) == -1)
 	{
 	  perror("fork");
@@ -52,7 +53,7 @@ void dialogueClient(int socket_client,char buf[]){
       write(socket_client, buf, size);
     }
   close(socket_client);
-  printf("Client déconnecté\n");
+  printf("\nClient deconnecte\n");
   exit(0);
 }
 

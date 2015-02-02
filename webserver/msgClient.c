@@ -20,5 +20,5 @@ void initialiser_signaux(void)
 
 void traitement_signal(int sig)
 {
-  printf("Signal %d reçu\n",sig);
+  printf("Signal %d recu\n",sig);
 }
