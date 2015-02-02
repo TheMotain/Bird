@@ -21,4 +21,5 @@ void initialiser_signaux(void)
 void traitement_signal(int sig)
 {
   printf("Signal %d recu\n",sig);
+  waitpid((pid_t)(-1), 0, WNOHANG);
 }

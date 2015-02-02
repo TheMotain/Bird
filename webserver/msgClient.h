@@ -1,5 +1,7 @@
 #include <signal.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 void initialiser_signaux(void);
 
