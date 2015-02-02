@@ -7,7 +7,6 @@ const char message[] ="\n\n             db         db\n            dpqb       dp
 
 int main()
 {
-  char buf[256];
   int socket_client;
   int socket_serveur;
   int pid;
@@ -17,7 +16,7 @@ int main()
   initialiser_signaux();
   while(1)
     {
-      printf("\nAttente de connexion\n");
+      printf("\nAttente de connexion\n\n");
       socket_client = accept(socket_serveur,(struct sockaddr *) &s_c_addr, &len);
       printf("Connection client\n");
       if(socket_client == -1)
@@ -38,24 +37,23 @@ int main()
 	}
       
       if(pid == 0){
-	dialogueClient(socket_client,buf);
+	dialogueClient(socket_client);
       }
     }
   return 0;
 }
 
-void dialogueClient(int socket_client,char buf[]){
+void dialogueClient(int socket_client){
   FILE * file;
+  char buf[1024];
   if((file = fdopen(socket_client,(const char *) "w+")) == NULL)
     {
       perror("fdopen");
       exit(-1);
     }
-  sleep(1);
-  fprintf(file,message);
   while(fgets(buf,sizeof(buf),file) != NULL)
     {
-      fprintf(file,"<Bird> %s",buf);
+      printf("%s",buf);
     }
   close(socket_client);
   printf("\nClient deconnecte\n");
