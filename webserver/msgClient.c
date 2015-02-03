@@ -42,6 +42,10 @@ void sendErrorRequest(FILE * file)
   fprintf(file,"400 Bad Request\r\n");
 }
 
+int emptyRequest(char * buf){
+  return compareString((const char *) buf, "^(\r)?\n$");
+}
+
 void detailClient(struct sockaddr_in addr,int id)
 {
   printf("Adresse : %s\n",inet_ntoa(addr.sin_addr));

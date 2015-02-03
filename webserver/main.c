@@ -63,6 +63,10 @@ void dialogueClient(int socket_client){
   while(fgets(buf,sizeof(buf),file) != NULL)
     {
       printf("[%d] => %s",id_Client,buf);
+      if(emptyRequest(buf) == 1)
+	{
+	  break;
+	}
     }
   close(socket_client);
   printf("\nClient[%d] deconnecte\n",id_Client);

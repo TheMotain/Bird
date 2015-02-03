@@ -18,3 +18,5 @@ int controlClientRequest(char * buf);
 void sendErrorRequest(FILE * file);
 
 void detailClient(struct sockaddr_in addr,int id);
+
+int emptyRequest(char * buf);
