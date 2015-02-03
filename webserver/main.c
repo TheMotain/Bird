@@ -9,6 +9,7 @@ int id_Client;
 
 int main()
 {
+  controlClientRequest("GET / HTTP/1.1");
   int socket_client;
   int socket_serveur;
   int pid;

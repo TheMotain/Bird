@@ -1,3 +1,4 @@
 main.o: main.c socket.h msgClient.h
-msgClient.o: msgClient.c msgClient.h
+msgClient.o: msgClient.c msgClient.h traitementString.h
 socket.o: socket.c socket.h
+traitementString.o: traitementString.c traitementString.h

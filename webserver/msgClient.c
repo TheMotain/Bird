@@ -1,4 +1,5 @@
 #include "msgClient.h"
+#include "traitementString.h"
 
 void initialiser_signaux(void)
 { 
@@ -27,34 +28,19 @@ void traitement_signal(int sig)
 }
 
 
-/*int controlClientRequest(char * buf)
+int controlClientRequest(char * buf)
 {
-  int i;
-  int start;
-  int nbWord;
-  char [3][] words;
+  char[][] words;
+  unsigned int i;
   if(strlen(buf) == 0)
     {
       return -1;
     }
-  start = 0;
-  for(i = 0; i < strlen(buf); i++)
-    {
-      if(*(buf+i) == ' ')
-	nbWords++;
-      if(*(buf+i) == '\n')
-	break;
-    }
-  if(nbWords != 3)
-    {
-      return 0;
-    }
-  if(strcmp((const char *) buf, "GET", 3) != 0)
-    {
-      return -1;
-    }
+  words = getWords(buf);
+  for(i = 0; i < sizeof(words);i++)
+    printf("%s\n",words[i]);
   return 0;
-  }*/
+}
 
 void sendErrorRequest(FILE * file)
 {
