@@ -30,16 +30,7 @@ void traitement_signal(int sig)
 
 int controlClientRequest(char * buf)
 {
-  char[][] words;
-  unsigned int i;
-  if(strlen(buf) == 0)
-    {
-      return -1;
-    }
-  words = getWords(buf);
-  for(i = 0; i < sizeof(words);i++)
-    printf("%s\n",words[i]);
-  return 0;
+  return compareString((const char *) buf, "GET / HTTP/1.[01]");
 }
 
 void sendErrorRequest(FILE * file)

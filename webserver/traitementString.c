@@ -1,26 +1,21 @@
 #include "traitementString.h"
 
-char[][] getWords(char * buf)
+int compareString(const char * request, const char * regex)
 {
-  unsigned int i;
-  int nbWords;
-  int start;
-  for(i = 0; i < strlen(buf); i++)
+  int err;
+  regex_t preg;
+  int compare;
+  err = regcomp(&preg, regex, REG_NOSUB |  REG_EXTENDED);
+  if(err != 0)
     {
-      if(*(buf+i)==' ')
-	nbWords++;
+      perror("Regcomp");
+      return -1;
     }
-  start = 0;
-  char words[nbWords][50];
-  nbWords = 0;
-  for(i=0; i < strlen(buf);i++)
+  compare = regexec(&preg, request, 0, NULL, 0);
+  regfree(&preg);
+  if(compare != 0)
     {
-      if(*(buf+i) == ' ')
-	{
-	  strncat(words[nbWords],(const char *)(buf+start),i-start);
-	  start = i;
-	  nbWords++;
-	}
+      return -1;
     }
-  return words;
+  return 1;
 }

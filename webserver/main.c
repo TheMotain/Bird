@@ -9,7 +9,6 @@ int id_Client;
 
 int main()
 {
-  controlClientRequest("GET / HTTP/1.1");
   int socket_client;
   int socket_serveur;
   int pid;
@@ -54,6 +53,12 @@ void dialogueClient(int socket_client){
     {
       perror("fdopen");
       exit(-1);
+    }
+  fgets(buf,sizeof(buf),file);
+  printf("[%d] => %s",id_Client,buf);
+  if(controlClientRequest(buf) != 1)
+    {
+      sendErrorRequest(file);
     }
   while(fgets(buf,sizeof(buf),file) != NULL)
     {
