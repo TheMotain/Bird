@@ -20,3 +20,5 @@ void sendErrorRequest(FILE * file);
 void detailClient(struct sockaddr_in addr,int id);
 
 int emptyRequest(char * buf);
+
+void sendWelcomeMessage(FILE * file);

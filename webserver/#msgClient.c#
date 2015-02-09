@@ -61,7 +61,6 @@ void sendWelcomeMessage(FILE *file)
   fprintf(file,"HTTP/1.1 200 OK\r\n");
   fprintf(file,"Connection: close\r\n");
   fprintf(file,"Content-Length: 921\r\n");
-  fflush(file);
   fprintf(file,"\r\n");
   fprintf(file,"%s\r\n",WELCOME);
   fflush(file);

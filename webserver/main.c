@@ -3,8 +3,6 @@
 #include <unistd.h>    
 #include "msgClient.h"
 
-const char message[] ="\n\n             db         db\n            dpqb       dp8b\n            8b qb_____dp_88\n            88/ .        `p\n            q'.            \\\n           .'.  .-.    ,-.  `--.\n           |.  / 0 \\  / 0 \\ |   \\\n           |.  `.__   ___.' | \\\\/\n           |.       \"       | (\n            \\.    `-'-'    ,' |\n           _/`------------'. .|\n          /.  \\\\::(::[];)||.. \\\n         /.  ' \\.`:;;;;'''/`. .|\n        |.   |/ `;--._.__/  |..|\n        |.  _/_,'''',,`.    `:.'\n        |.     ` / ,  ',`.   |/     \"Yotsuya no Neko\"\n         \\.   -'/\\/     ',\\  |\\         gst38min\n          /\\__-' /\\ /     ,. |.\\       1995.08.31\n         /. .|  '  /-.    ,: |..\\\n        :.  .|    /| | ,  ,||. ..:\n        |.  .`     | '//` ,:|.  .|\n        |..  .\\      //\\/ ,|.  ..|\n         \\.   .\\     <./  ,'. ../\n          \\_ ,..`.__    _,..,._/\n            `\\|||/  `--'\\|||/'\n\n\n";
-
 int id_Client;
 
 int main()
@@ -60,13 +58,17 @@ void dialogueClient(int socket_client){
     {
       sendErrorRequest(file);
     }
-  while(fgets(buf,sizeof(buf),file) != NULL)
+  else
     {
-      printf("[%d] => %s",id_Client,buf);
-      if(emptyRequest(buf) == 1)
+      while(fgets(buf,sizeof(buf),file) != NULL)
 	{
-	  break;
+	  printf("[%d] => %s",id_Client,buf);
+	  if(emptyRequest(buf) == 1)
+	    {
+	      break;
+	    }
 	}
+      sendWelcomeMessage(file);
     }
   close(socket_client);
   printf("\nClient[%d] deconnecte\n",id_Client);
