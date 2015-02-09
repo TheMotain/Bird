@@ -1,10 +1,10 @@
-#include <string.h>
 #include "socket.h"
 #include <unistd.h>    
 #include "msgClient.h"
-#include "traitementString.h"
+#include "requestProcessing.h"
+#include "ecouteClient.h"
 
-int id_Client;
+extern int id_Client;
 
 int main()
 {
@@ -54,10 +54,10 @@ void dialogueClient(int socket_client){
       perror("fdopen");
       exit(-1);
     }
-  fgets(buf,sizeof(buf),file);
+  fgets_or_exit(buf,sizeof(buf),file);
   printf("[%d] => %s",id_Client,buf);
   err = controlClientRequest(buf);
-  while(fgets(buf,sizeof(buf),file) != NULL)
+  while(fgets_or_exit(buf,sizeof(buf),file) != NULL)
     {
       printf("[%d] => %s",id_Client,buf);
       if(emptyRequest(buf) == 0)
