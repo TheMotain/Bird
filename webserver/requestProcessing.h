@@ -1,5 +1,8 @@
 #include <string.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <regex.h>
+#include <stdlib.h>
 
 enum http_method {
   HTTP_GET,
@@ -19,7 +22,12 @@ typedef struct
   regex_t method;
   regex_t version;
   regex_t url;
+  regex_t empty;
 } request_patern;
+
+void initRequest_Patern(void);
+
+void freeRequest_Patern(void);
 
 int controlClientRequest(const char * buf);
 

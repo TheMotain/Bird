@@ -1,5 +1,48 @@
 #include "requestProcessing.h"
 
+struct request_patern regexs;
+
+void initRequest_Patern(void)
+{
+  int err;
+  const char * regex = "^GET ";
+  err = regcomp(&(regexs->methode),regex, REG_NOSUB | REG_EXTENDED);
+  if(err != 0)
+    {
+      perror("Regcomp methode");
+      exit(-1);
+    }
+  regex = " /(*[a-zA-Z0-9]\\.html) ";
+  err = regcomp(&(regexs->url),regex,REG_NOSUB | REG_EXTENDED);
+  if(err != 0)
+    {
+      perror("Regcomp url");
+      exit(-1);
+    }
+  regex = " HTTP/(1.1|1.0)";
+  err = regcomp(&(regexs->version),regex,REG_NOSUB | REG_EXTENDED);
+  if(err != 0)
+    {
+      perror("Regcomp version");
+      exit(-1);
+    }
+  regex = "(\r\n|\n)$";
+  err = regcomp(&(regexs->empty),regex,REG_NOSUB | REG_EXTENDED);
+  if(err != 0)
+    {
+      perror("Regcomp empty");
+      exit(-1);
+    }
+}
+
+void freeRequest_Patern(void)
+{
+  regfree(&(regexs->methode));
+  regfree(&(regexs->url));
+  regfree(&(regexs->version));
+  regfree(&(regexs->empty));
+}
+
 int controlClientRequest(const char * request)
 {
   char * buff = (char *)request; 
@@ -52,7 +95,9 @@ int emptyRequest(char * buff){
   return 0;
 }
 
-int parse_http_request(const char * request_line, http_request * request)
+/*int parse_http_request(const char * request_line, http_request * request)
 {
 
-}
+}*/
+
+
