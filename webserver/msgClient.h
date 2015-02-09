@@ -13,12 +13,10 @@ void traitement_signal(int sig);
 
 void dialogueClient(int socket_client);
 
-int controlClientRequest(char * buf);
+void send400ErrorRequest(FILE * file);
 
-void sendErrorRequest(FILE * file);
+void send404ErrorRequest(FILE * file);
 
 void detailClient(struct sockaddr_in addr,int id);
-
-int emptyRequest(char * buf);
 
 void sendWelcomeMessage(FILE * file);

@@ -25,28 +25,28 @@ void initialiser_signaux(void)
 
 void traitement_signal(int sig)
 {
-  printf("Signal %d recu\n",sig);
+  printf("Signal %d recu\n\n",sig);
   waitpid((pid_t)(-1), 0, WNOHANG);
 }
 
-
-int controlClientRequest(char * buf)
-{
-  return compareString((const char *) buf, "GET / HTTP/1.[01]");
-}
-
-void sendErrorRequest(FILE * file)
+void send400ErrorRequest(FILE * file)
 {
   fprintf(file,"HTTP/1.1 400 Bad Request\r\n");
   fprintf(file,"Connection: close\r\n");
-  fprintf(file,"Content-Length: 17\r\n");
+  fprintf(file,"Content-Length: %d\r\n",(int)strlen("400 Bad Request\r\n"));
   fprintf(file,"\r\n");
   fprintf(file,"400 Bad Request\r\n");
   fflush(file);
 }
 
-int emptyRequest(char * buf){
-  return compareString((const char *) buf, "^(\r)?\n$");
+void send404ErrorRequest(FILE *file)
+{
+  fprintf(file,"HTTP/1.1 404 Not Found\r\n");
+  fprintf(file,"Connection: close\r\n");
+  fprintf(file,"Content-length: %d\r\n",(int)strlen("404 File Not Found\r\n"));
+  fprintf(file,"\r\n");
+  fprintf(file,"404 File Not Found\r\n");
+  fflush(file);
 }
 
 void detailClient(struct sockaddr_in addr,int id)
@@ -60,8 +60,7 @@ void sendWelcomeMessage(FILE *file)
 {
   fprintf(file,"HTTP/1.1 200 OK\r\n");
   fprintf(file,"Connection: close\r\n");
-  fprintf(file,"Content-Length: 921\r\n");
-  fflush(file);
+  fprintf(file,"Content-Length: %d\r\n",(int)strlen(WELCOME));
   fprintf(file,"\r\n");
   fprintf(file,"%s\r\n",WELCOME);
   fflush(file);

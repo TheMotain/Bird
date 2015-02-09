@@ -2,6 +2,7 @@
 #include "socket.h"
 #include <unistd.h>    
 #include "msgClient.h"
+#include "traitementString.h"
 
 int id_Client;
 
@@ -47,6 +48,7 @@ int main()
 void dialogueClient(int socket_client){
   FILE * file;
   char buf[1024];
+  int err;
   if((file = fdopen(socket_client,(const char *) "w+")) == NULL)
     {
       perror("fdopen");
@@ -54,20 +56,25 @@ void dialogueClient(int socket_client){
     }
   fgets(buf,sizeof(buf),file);
   printf("[%d] => %s",id_Client,buf);
-  if(controlClientRequest(buf) != 1)
+  err = controlClientRequest(buf);
+  while(fgets(buf,sizeof(buf),file) != NULL)
     {
-      sendErrorRequest(file);
+      printf("[%d] => %s",id_Client,buf);
+      if(emptyRequest(buf) == 0)
+	{
+	  break;
+	}
+    }
+  if(err == 400)
+    {
+     send400ErrorRequest(file);
+    }
+  else if(err == 404)
+    {
+     send404ErrorRequest(file);
     }
   else
     {
-      while(fgets(buf,sizeof(buf),file) != NULL)
-	{
-	  printf("[%d] => %s",id_Client,buf);
-	  if(emptyRequest(buf) == 1)
-	    {
-	      break;
-	    }
-	}
       sendWelcomeMessage(file);
     }
   close(socket_client);

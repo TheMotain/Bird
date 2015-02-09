@@ -1,21 +1,53 @@
 #include "traitementString.h"
 
-int compareString(const char * request, const char * regex)
+int controlClientRequest(const char * request)
 {
-  int err;
-  regex_t preg;
-  int compare;
-  err = regcomp(&preg, regex, REG_NOSUB |  REG_EXTENDED);
-  if(err != 0)
+  char * buff = (char *)request; 
+  char * token;
+  int i;
+  char * file;
+  token = strtok(buff, " ");
+  for(i = 0; i < 3; i++)
     {
-      perror("Regcomp");
-      return -1;
+      if(token == NULL)
+	return 400;
+      if(i == 0)
+	{
+	  if(strcmp(token,"GET")!=0)
+	    {
+	      return 400;
+	    }
+	}
+      if(i == 1)
+	{
+	  file = token;
+	  if(*token != '/')
+	    {
+	      return 400;
+	    }
+	}
+      if(i == 2)
+	{
+	  if(strcmp(token,"HTTP/1.0\r\n")!=0 && strcmp(token,"HTTP/1.1\r\n") != 0)
+	    {
+	      return 400;
+	    }
+	}
+      token = strtok(NULL, " ");
     }
-  compare = regexec(&preg, request, 0, NULL, 0);
-  regfree(&preg);
-  if(compare != 0)
+  if(token != NULL)
     {
-      return -1;
+      return 400;
     }
-  return 1;
+  if(strcmp(file,"/")!=0)
+    {
+      return 404;
+    }
+  return 0;
+}
+
+int emptyRequest(char * buff){
+  if(strcmp(buff,"\r\n") != 0 && strcmp(buff,"\n") != 0)
+    return -1;
+  return 0;
 }
