@@ -49,6 +49,7 @@ void dialogueClient(int socket_client){
   FILE * file;
   char buf[1024];
   int err;
+  http_request request;
   if((file = fdopen(socket_client,(const char *) "w+")) == NULL)
     {
       perror("fdopen");
@@ -56,7 +57,9 @@ void dialogueClient(int socket_client){
     }
   fgets_or_exit(buf,sizeof(buf),file);
   printf("[%d] => %s",id_Client,buf);
-  err = controlClientRequest(buf);
+
+  err = parse_http_request((const char *) buf, &request);
+
   while(fgets_or_exit(buf,sizeof(buf),file) != NULL)
     {
       printf("[%d] => %s",id_Client,buf);
@@ -65,7 +68,7 @@ void dialogueClient(int socket_client){
 	  break;
 	}
     }
-  if(err == 400)
+  if(err == 0)
     {
      send400ErrorRequest(file);
     }

@@ -23,7 +23,7 @@ typedef struct
   regex_t version;
   regex_t url;
   regex_t empty;
-} request_patern;
+} request_pattern;
 
 void initRequest_Patern(void);
 
