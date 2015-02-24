@@ -1,6 +1,6 @@
 #include "msgClient.h"
 
-const char * WELCOME = "\n\n             db         db\n            dpqb       dp8b\n            8b qb_____dp_88\n            88/ .        `p\n            q'.            \\\n           .'.  .-.    ,-.  `--.\n           |.  / 0 \\  / 0 \\ |   \\\n           |.  `.__   ___.' | \\\\/\n           |.       \"       | (\n            \\.    `-'-'    ,' |\n           _/`------------'. .|\n          /.  \\\\::(::[];)||.. \\\n         /.  ' \\.`:;;;;'''/`. .|\n        |.   |/ `;--._.__/  |..|\n        |.  _/_,'''',,`.    `:.'\n        |.     ` / ,  ',`.   |/     \"Yotsuya no Neko\"\n         \\.   -'/\\/     ',\\  |\\         gst38min\n          /\\__-' /\\ /     ,. |.\\       1995.08.31\n         /. .|  '  /-.    ,: |..\\\n        :.  .|    /| | ,  ,||. ..:\n        |.  .`     | '//` ,:|.  .|\n        |..  .\\      //\\/ ,|.  ..|\n         \\.   .\\     <./  ,'. ../\n          \\_ ,..`.__    _,..,._/\n            `\\|||/  `--'\\|||/'\n\n\n";
+extern const char * motd;
 
 void initialiser_signaux(void)
 { 
@@ -28,26 +28,6 @@ void traitement_signal(int sig)
   waitpid((pid_t)(-1), 0, WNOHANG);
 }
 
-void send400ErrorRequest(FILE * file)
-{
-  fprintf(file,"HTTP/1.1 400 Bad Request\r\n");
-  fprintf(file,"Connection: close\r\n");
-  fprintf(file,"Content-Length: %d\r\n",(int)strlen("400 Bad Request\r\n"));
-  fprintf(file,"\r\n");
-  fprintf(file,"400 Bad Request\r\n");
-  fflush(file);
-}
-
-void send404ErrorRequest(FILE *file)
-{
-  fprintf(file,"HTTP/1.1 404 Not Found\r\n");
-  fprintf(file,"Connection: close\r\n");
-  fprintf(file,"Content-length: %d\r\n",(int)strlen("404 File Not Found\r\n"));
-  fprintf(file,"\r\n");
-  fprintf(file,"404 File Not Found\r\n");
-  fflush(file);
-}
-
 void detailClient(struct sockaddr_in addr,int id)
 {
   printf("Adresse : %s\n",inet_ntoa(addr.sin_addr));
@@ -55,12 +35,17 @@ void detailClient(struct sockaddr_in addr,int id)
   printf("ID Client : %d\n",id);
 }
 
-void sendWelcomeMessage(FILE *file)
+void send_status(FILE * client, int code, const char * reason_phrase)
 {
-  fprintf(file,"HTTP/1.1 200 OK\r\n");
-  fprintf(file,"Connection: close\r\n");
-  fprintf(file,"Content-Length: %d\r\n",(int)strlen(WELCOME));
-  fprintf(file,"\r\n");
-  fprintf(file,"%s\r\n",WELCOME);
-  fflush(file);
+  fprintf(client,"HTTP/1.1 %d %s\r\n",code,reason_phrase);
+  fprintf(client,"Connection: close\r\n");
+}
+
+void send_response(FILE * client, int code, const char * reason_phrase, const char * message_body)
+{
+  send_status(client,code,reason_phrase);
+  fprintf(client,"Content-Length: %d\r\n",(int)strlen(message_body));
+  fprintf(client,"\r\n");
+  fprintf(client,"%s\r\n",message_body);
+  fflush(client);
 }

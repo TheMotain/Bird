@@ -1,4 +1,4 @@
-ecouteClient.o: ecouteClient.c ecouteClient.h
+ecouteClient.o: ecouteClient.c ecouteClient.h requestProcessing.h
 main.o: main.c socket.h msgClient.h requestProcessing.h ecouteClient.h
 msgClient.o: msgClient.c msgClient.h
 requestProcessing.o: requestProcessing.c requestProcessing.h

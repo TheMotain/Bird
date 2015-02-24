@@ -4,6 +4,13 @@
 #include <regex.h>
 #include <stdlib.h>
 
+typedef struct
+{
+  regex_t preg;
+  size_t nmatch;
+  regmatch_t *pmatch;
+} contents;
+
 enum http_method {
   HTTP_GET,
   HTTP_UNSUPPORTED,
@@ -20,17 +27,18 @@ typedef struct
 typedef struct
 {
   regex_t method;
-  regex_t version;
-  regex_t url;
+  regex_t protocole;
+  contents url;
+  contents version;
   regex_t empty;
 } request_pattern;
 
-void initRequest_Patern(void);
+void initRequest_Pattern(void);
 
-void freeRequest_Patern(void);
-
-int controlClientRequest(const char * buf);
+void freeRequest_Pattern(void);
 
 int emptyRequest(char * request);
 
 int parse_http_request(const char *request_line, http_request * request);
+
+void regexError(regex_t preg,int err);

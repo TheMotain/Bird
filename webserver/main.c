@@ -5,6 +5,7 @@
 #include "ecouteClient.h"
 
 extern int id_Client;
+extern const char * motd;
 
 int main()
 {
@@ -16,6 +17,7 @@ int main()
   id_Client = 0;
   socket_serveur = creer_serveur(8080);
   initialiser_signaux();
+  initRequest_Pattern();
   while(1)
     {
       printf("\nAttente de connexion\n\n");
@@ -42,6 +44,7 @@ int main()
 	dialogueClient(socket_client);
       }
     }
+  freeRequest_Pattern();
   return 0;
 }
 
@@ -57,29 +60,24 @@ void dialogueClient(int socket_client){
     }
   fgets_or_exit(buf,sizeof(buf),file);
   printf("[%d] => %s",id_Client,buf);
-
   err = parse_http_request((const char *) buf, &request);
+  skip_headers(file);
 
-  while(fgets_or_exit(buf,sizeof(buf),file) != NULL)
-    {
-      printf("[%d] => %s",id_Client,buf);
-      if(emptyRequest(buf) == 0)
-	{
-	  break;
-	}
-    }
-  if(err == 0)
-    {
-     send400ErrorRequest(file);
-    }
-  else if(err == 404)
-    {
-     send404ErrorRequest(file);
-    }
-  else
-    {
-      sendWelcomeMessage(file);
-    }
+  if(!err){
+    send_response(file,400,"Bad Request","Bad Request\r\n");
+  }
+  else if(request.method == HTTP_UNSUPPORTED){
+    send_response(file,405,"Method Not Allowed","Method Not Allowed\r\n");
+  }
+  else if(request.major_version != 1 || request.minor_version < 0 || request.major_version > 1){
+    send_response(file,505,"HTTP Version Not Supported","HTTP Version Not Supported\r\n");
+  }
+  else if(strcmp(request.url,"/")==0){
+    send_response(file,200,"OK",motd);
+  }
+  else{
+    send_response(file,404,"Not Found","NotFound\r\n");
+  }
   close(socket_client);
   printf("\nClient[%d] deconnecte\n",id_Client);
   exit(0);
