@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <stdlib.h>  
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -21,3 +23,5 @@ void detailClient(struct sockaddr_in addr,int id);
 void send_status(FILE * client, int code, const char *reason_phrase);
 
 void send_response(FILE * client, int code, const char *reason_phrase, const char * message_body);
+
+int check_and_open(const char *url,const char *document_root);

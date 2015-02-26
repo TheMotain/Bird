@@ -47,3 +47,9 @@ void send_response(FILE * client, int code, const char * reason_phrase, const ch
   fprintf(client,"%s\r\n",message_body);
   fflush(client);
 }
+
+int check_and_open(const char *url,const char *document_root){
+  int fd;
+  char * path = malloc(sizeof(char *) * (strlen(document_root)+strlen(url)) + 1);
+  strcat(path,document_root);
+}

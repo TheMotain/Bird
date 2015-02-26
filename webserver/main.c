@@ -62,6 +62,7 @@ void dialogueClient(int socket_client){
   printf("[%d] => %s",id_Client,buf);
   err = parse_http_request((const char *) buf, &request);
   skip_headers(file);
+  rewrite_url(request.url);
   if(!err){
     send_response(file,400,"Bad Request","Bad Request\r\n");
   }
@@ -77,6 +78,7 @@ void dialogueClient(int socket_client){
   else{
     send_response(file,404,"Not Found","NotFound\r\n");
   }
+  printf("url:%s:\n",request.url);
   close(socket_client);
   printf("\nClient[%d] deconnecte\n",id_Client);
   exit(0);

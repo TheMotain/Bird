@@ -13,7 +13,7 @@ void initRequest_Pattern(void)
       exit(-1);
     }
 
-  regex = " ((/[a-zA-Z0-9]*)) ";
+  regex = " ((/[a-zA-Z0-9?=&:-_]*)) ";
   err = regcomp(&(regexs.url.preg),regex,REG_EXTENDED);
   if(err != 0)
     {
@@ -124,4 +124,17 @@ void regexError(regex_t preg,int err){
       fprintf (stderr, "%s\n", text);
       free (text);
     }
+}
+
+char * rewrite_url(char * url){
+  unsigned int idx;
+  for(idx = 0; idx < strlen(url); idx ++){
+    if(url[idx] == '?')
+      break;
+  }
+  if(idx < strlen(url)){
+    strncpy(url,(const char *)url,idx);
+    url[idx] = '\0';
+  }
+  return url;
 }

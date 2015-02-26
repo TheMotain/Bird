@@ -41,3 +41,5 @@ int emptyRequest(char * request);
 int parse_http_request(const char *request_line, http_request * request);
 
 void regexError(regex_t preg,int err);
+
+char * rewrite_url(char * url);
