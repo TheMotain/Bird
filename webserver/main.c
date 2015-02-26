@@ -4,8 +4,8 @@
 #include "requestProcessing.h"
 #include "ecouteClient.h"
 
-extern int id_Client;
-extern const char * motd;
+int id_Client;
+const char * motd = "\n\n             db         db\n            dpqb       dp8b\n            8b qb_____dp_88\n            88/ .        `p\n            q'.            \\\n           .'.  .-.    ,-.  `--.\n           |.  / 0 \\  / 0 \\ |   \\\n           |.  `.__   ___.' | \\\\/\n           |.       \"       | (\n            \\.    `-'-'    ,' |\n           _/`------------'. .|\n          /.  \\\\::(::[];)||.. \\\n         /.  ' \\.`:;;;;'''/`. .|\n        |.   |/ `;--._.__/  |..|\n        |.  _/_,'''',,`.    `:.'\n        |.     ` / ,  ',`.   |/     \"Yotsuya no Neko\"\n         \\.   -'/\\/     ',\\  |\\         gst38min\n          /\\__-' /\\ /     ,. |.\\       1995.08.31\n         /. .|  '  /-.    ,: |..\\\n        :.  .|    /| | ,  ,||. ..:\n        |.  .`     | '//` ,:|.  .|\n        |..  .\\      //\\/ ,|.  ..|\n         \\.   .\\     <./  ,'. ../\n          \\_ ,..`.__    _,..,._/\n            `\\|||/  `--'\\|||/'\n\n\n";
 
 int main()
 {
@@ -62,7 +62,6 @@ void dialogueClient(int socket_client){
   printf("[%d] => %s",id_Client,buf);
   err = parse_http_request((const char *) buf, &request);
   skip_headers(file);
-
   if(!err){
     send_response(file,400,"Bad Request","Bad Request\r\n");
   }

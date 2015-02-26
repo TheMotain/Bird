@@ -13,7 +13,7 @@ void initRequest_Pattern(void)
       exit(-1);
     }
 
-  regex = " /([a-zA-Z0-9]*)? ";
+  regex = " ((/[a-zA-Z0-9]*)) ";
   err = regcomp(&(regexs.url.preg),regex,REG_EXTENDED);
   if(err != 0)
     {
@@ -27,15 +27,7 @@ void initRequest_Pattern(void)
     exit(-1);
   }
 
-  regex = " HTTP/([0-9]+.[0-9]+)";
-  err = regcomp(&(regexs.protocole),regex,REG_NOSUB | REG_EXTENDED);
-  if(err != 0)
-    {
-      regexError(regexs.protocole,err);
-      exit(-1);
-    }
-  
-  regex = "([0-9]+.[0-9]+)";
+  regex = " HTTP/(([0-9]+.[0-9]+))";
   err = regcomp(&(regexs.version.preg),regex,REG_EXTENDED);
   regexs.version.nmatch = regexs.version.preg.re_nsub;
   regexs.version.pmatch = malloc(sizeof(*regexs.version.pmatch) * regexs.version.nmatch);
@@ -58,7 +50,6 @@ void freeRequest_Pattern(void)
   regfree(&(regexs.method));
   regfree(&(regexs.url.preg));
   free(regexs.url.pmatch);
-  regfree(&(regexs.protocole));
   regfree(&(regexs.version.preg));
   free(regexs.version.pmatch);
   regfree(&(regexs.empty));
@@ -74,19 +65,19 @@ int parse_http_request(const char * request_line, http_request *request){
   int match;
   int start, end;
   size_t size;
+  request->method = HTTP_GET;
   match = regexec(&(regexs.method),request_line,0,NULL,0);
   if(match != 0){
     request->method = HTTP_UNSUPPORTED;
-    return 0;
+    return 1;
   }
   match = regexec(&(regexs.url.preg),request_line,regexs.url.nmatch,regexs.url.pmatch,0);
   if(match != 0){
-    request->method = HTTP_UNSUPPORTED;
     return 0;
   }
   else{
-    start = regexs.url.pmatch[0].rm_so;
-    end = regexs.url.pmatch[0].rm_eo;
+    start = regexs.url.pmatch[1].rm_so;
+    end = regexs.url.pmatch[1].rm_eo;
     size = end - start;
     if((request->url = malloc(size + 1)) == NULL){
       perror("Malloc extract url");
@@ -95,19 +86,13 @@ int parse_http_request(const char * request_line, http_request *request){
     strncpy(request->url,&request_line[start],size);
     request->url[size]='\0';
   }
-  match = regexec(&(regexs.protocole),request_line,0,NULL,0);
-  if(match != 0){
-    request->method = HTTP_UNSUPPORTED;
-    return 0;
-  }
   match = regexec(&(regexs.version.preg),request_line,regexs.version.nmatch,regexs.version.pmatch,0);
   if(match != 0){
-    request->method = HTTP_UNSUPPORTED;
     return 0;
   }
   else{
-    start = regexs.version.pmatch[0].rm_so;
-    end = regexs.version.pmatch[0].rm_eo;
+    start = regexs.version.pmatch[1].rm_so;
+    end = regexs.version.pmatch[1].rm_eo;
     size = end - start;
     char * tmp = malloc(size + 1);
     if(tmp == NULL){
@@ -115,16 +100,15 @@ int parse_http_request(const char * request_line, http_request *request){
       exit(-1);
     }
     strncpy(tmp,&request_line[start],size);
+    tmp[size]='\0';
     request->major_version = atoi((const char *)tmp);
     request->minor_version = atoi((const char *)tmp+2);
     free(tmp);
   }
   match = regexec(&(regexs.empty),request_line,0,NULL,0);
   if(match != 0){
-    request->method = HTTP_UNSUPPORTED;
     return 0;
   }
-  request->method = HTTP_GET;
   return 1;
 }
 

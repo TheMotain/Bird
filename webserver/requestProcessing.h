@@ -27,7 +27,6 @@ typedef struct
 typedef struct
 {
   regex_t method;
-  regex_t protocole;
   contents url;
   contents version;
   regex_t empty;

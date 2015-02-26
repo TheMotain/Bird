@@ -1,7 +1,5 @@
 #include "msgClient.h"
 
-extern const char * motd;
-
 void initialiser_signaux(void)
 { 
   struct sigaction sa;
