@@ -51,5 +51,26 @@ void send_response(FILE * client, int code, const char * reason_phrase, const ch
 int check_and_open(const char *url,const char *document_root){
   int fd;
   char * path = malloc(sizeof(char *) * (strlen(document_root)+strlen(url)) + 1);
+  struct stat status;
   strcat(path,document_root);
+  fd = open((const char *) path, O_RDONLY);
+  fstat(fd,&status);
+  if(S_ISREG(status.st_mode))
+    return fd;
+  else
+    return -1;
+}
+
+int get_file_size(int fd){
+  struct stat status;
+  fstat(fd,&status);
+  return (int) status.st_size;
+}
+
+int copy(int in, int out){
+  char buff[1024];
+  int reading;
+  while((reading = read(in,buff,sizeof(buff))) > 0)
+    write(out,buff,reading);
+  return out;
 }

@@ -53,6 +53,7 @@ void dialogueClient(int socket_client){
   char buf[1024];
   int err;
   http_request request;
+  int fd;
   if((file = fdopen(socket_client,(const char *) "w+")) == NULL)
     {
       perror("fdopen");
@@ -72,11 +73,15 @@ void dialogueClient(int socket_client){
   else if(request.major_version != 1 || request.minor_version < 0 || request.major_version > 1){
     send_response(file,505,"HTTP Version Not Supported","HTTP Version Not Supported\r\n");
   }
-  else if(strcmp(request.url,"/")==0){
-    send_response(file,200,"OK",motd);
+  else if((fd = check_and_open(request.url,"../www")) == -1){
+    send_response(file,404,"Not Found",motd);
   }
-  else{
-    send_response(file,404,"Not Found","NotFound\r\n");
+  else {
+    send_status(file, 200, "OK");
+    fprintf(file,"Content-Length: %d\r\n",get_file_size(fd));
+    fprintf(file,"Content-Type: text/html\r\n");
+    fprintf(file,"\r\n");
+    copy(fd,fileno(file));
   }
   printf("url:%s:\n",request.url);
   close(socket_client);
