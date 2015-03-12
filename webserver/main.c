@@ -85,7 +85,9 @@ void dialogueClient(int socket_client){
     send_status(file, 200, "OK");
     fprintf(file,"Content-Length: %d\r\n",get_file_size(fd));
     fprintf(file,"Content-Type: %s\r\n",get_mime_type(get_ext(request.url)));
+    printf("Content-Type: %s\r\n",get_mime_type(get_ext(request.url)));
     fprintf(file,"\r\n");
+    fflush(file);
     copy(fd,fileno(file));
   }
   close(socket_client);
