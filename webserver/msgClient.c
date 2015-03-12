@@ -22,8 +22,12 @@ void initialiser_signaux(void)
 
 void traitement_signal(int sig)
 {
-  printf("Signal %d recu\n\n",sig);
-  waitpid((pid_t)(-1), 0, WNOHANG);
+  int status;
+  printf("Signal %d recu\n",sig);
+  waitpid(-1, &status, WNOHANG);
+  if(WIFSIGNALED(status))
+    printf("Fils tue par signal %d\n\n",WTERMSIG(status));
+
 }
 
 void detailClient(struct sockaddr_in addr,int id)
@@ -53,6 +57,7 @@ int check_and_open(const char *url,const char *document_root){
   char * path = malloc(sizeof(char *) * (strlen(document_root)+strlen(url)) + 1);
   struct stat status;
   strcat(path,document_root);
+  strcat(path,url);
   fd = open((const char *) path, O_RDONLY);
   fstat(fd,&status);
   if(S_ISREG(status.st_mode))
@@ -73,4 +78,10 @@ int copy(int in, int out){
   while((reading = read(in,buff,sizeof(buff))) > 0)
     write(out,buff,reading);
   return out;
+}
+
+int forbidden(char * url){
+  if(strstr(url,"/../"))
+    return 1;
+  return 0;
 }

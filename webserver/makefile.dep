@@ -1,5 +1,7 @@
 ecouteClient.o: ecouteClient.c ecouteClient.h requestProcessing.h
-main.o: main.c socket.h msgClient.h requestProcessing.h ecouteClient.h
+main.o: main.c socket.h msgClient.h requestProcessing.h ecouteClient.h \
+ mime.h
+mime.o: mime.c mime.h
 msgClient.o: msgClient.c msgClient.h
 requestProcessing.o: requestProcessing.c requestProcessing.h
 socket.o: socket.c socket.h

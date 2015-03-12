@@ -31,3 +31,5 @@ int check_and_open(const char *url,const char *document_root);
 int get_file_size(int fd);
 
 int copy(int in, int out);
+
+int forbidden(char * url);

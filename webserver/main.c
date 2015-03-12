@@ -3,6 +3,7 @@
 #include "msgClient.h"
 #include "requestProcessing.h"
 #include "ecouteClient.h"
+#include "mime.h"
 
 int id_Client;
 const char * motd = "\n\n             db         db\n            dpqb       dp8b\n            8b qb_____dp_88\n            88/ .        `p\n            q'.            \\\n           .'.  .-.    ,-.  `--.\n           |.  / 0 \\  / 0 \\ |   \\\n           |.  `.__   ___.' | \\\\/\n           |.       \"       | (\n            \\.    `-'-'    ,' |\n           _/`------------'. .|\n          /.  \\\\::(::[];)||.. \\\n         /.  ' \\.`:;;;;'''/`. .|\n        |.   |/ `;--._.__/  |..|\n        |.  _/_,'''',,`.    `:.'\n        |.     ` / ,  ',`.   |/     \"Yotsuya no Neko\"\n         \\.   -'/\\/     ',\\  |\\         gst38min\n          /\\__-' /\\ /     ,. |.\\       1995.08.31\n         /. .|  '  /-.    ,: |..\\\n        :.  .|    /| | ,  ,||. ..:\n        |.  .`     | '//` ,:|.  .|\n        |..  .\\      //\\/ ,|.  ..|\n         \\.   .\\     <./  ,'. ../\n          \\_ ,..`.__    _,..,._/\n            `\\|||/  `--'\\|||/'\n\n\n";
@@ -63,7 +64,8 @@ void dialogueClient(int socket_client){
   printf("[%d] => %s",id_Client,buf);
   err = parse_http_request((const char *) buf, &request);
   skip_headers(file);
-  rewrite_url(request.url);
+  request.url = rewrite_url(request.url);
+  printf("[%d] url => %s\n",id_Client,request.url);
   if(!err){
     send_response(file,400,"Bad Request","Bad Request\r\n");
   }
@@ -73,17 +75,19 @@ void dialogueClient(int socket_client){
   else if(request.major_version != 1 || request.minor_version < 0 || request.major_version > 1){
     send_response(file,505,"HTTP Version Not Supported","HTTP Version Not Supported\r\n");
   }
+  else if(forbidden(request.url) == 1){
+    send_response(file,403,"Forbidden","Forbidden\r\n");
+  }
   else if((fd = check_and_open(request.url,"../www")) == -1){
-    send_response(file,404,"Not Found",motd);
+    send_response(file,404,"Not Found","Page not found\r\n");
   }
   else {
     send_status(file, 200, "OK");
     fprintf(file,"Content-Length: %d\r\n",get_file_size(fd));
-    fprintf(file,"Content-Type: text/html\r\n");
+    fprintf(file,"Content-Type: %s\r\n",get_mime_type(get_ext(request.url)));
     fprintf(file,"\r\n");
     copy(fd,fileno(file));
   }
-  printf("url:%s:\n",request.url);
   close(socket_client);
   printf("\nClient[%d] deconnecte\n",id_Client);
   exit(0);
