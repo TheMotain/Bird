@@ -1,4 +1,6 @@
 #include "msgClient.h"
+#include "mime.h"
+#include "stats.h"
 
 void initialiser_signaux(void)
 { 
@@ -84,4 +86,20 @@ int forbidden(char * url){
   if(strstr(url,"/../"))
     return 1;
   return 0;
+}
+
+void send_stats(FILE * client){
+  send_status(client,200,"OK");
+  fprintf(client,"Content-Length: %d\r\n",1024);
+  fprintf(client,"Content-Type: %s\r\n", get_mime_type(get_ext("test.txt")));
+  fprintf(client,"\r\n");
+  fflush(client);
+  fprintf(client,"Server Status\r\n\r\n");
+  fprintf(client,"Served Connections : %d\r\n",get_stats()->served_connections);
+  fprintf(client,"Served Requests : %d\r\n",get_stats()->served_requests);
+  fprintf(client,"OK 200 : %d\r\n",get_stats()->ok_200);
+  fprintf(client,"KO 400 : %d\r\n",get_stats()->ko_400);
+  fprintf(client,"KO 403 : %d\r\n",get_stats()->ko_403);
+  fprintf(client,"KO 404 : %d\r\n",get_stats()->ko_404);
+  fflush(client);
 }

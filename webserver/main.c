@@ -4,6 +4,7 @@
 #include "requestProcessing.h"
 #include "ecouteClient.h"
 #include "mime.h"
+#include "stats.h"
 
 int id_Client;
 const char * motd = "\n\n             db         db\n            dpqb       dp8b\n            8b qb_____dp_88\n            88/ .        `p\n            q'.            \\\n           .'.  .-.    ,-.  `--.\n           |.  / 0 \\  / 0 \\ |   \\\n           |.  `.__   ___.' | \\\\/\n           |.       \"       | (\n            \\.    `-'-'    ,' |\n           _/`------------'. .|\n          /.  \\\\::(::[];)||.. \\\n         /.  ' \\.`:;;;;'''/`. .|\n        |.   |/ `;--._.__/  |..|\n        |.  _/_,'''',,`.    `:.'\n        |.     ` / ,  ',`.   |/     \"Yotsuya no Neko\"\n         \\.   -'/\\/     ',\\  |\\         gst38min\n          /\\__-' /\\ /     ,. |.\\       1995.08.31\n         /. .|  '  /-.    ,: |..\\\n        :.  .|    /| | ,  ,||. ..:\n        |.  .`     | '//` ,:|.  .|\n        |..  .\\      //\\/ ,|.  ..|\n         \\.   .\\     <./  ,'. ../\n          \\_ ,..`.__    _,..,._/\n            `\\|||/  `--'\\|||/'\n\n\n";
@@ -19,10 +20,15 @@ int main()
   socket_serveur = creer_serveur(8080);
   initialiser_signaux();
   initRequest_Pattern();
+  if(init_stats() == 0){
+    perror("Init Stats");
+    exit(-1);
+  }
   while(1)
     {
       printf("\nAttente de connexion\n\n");
       socket_client = accept(socket_serveur,(struct sockaddr *) &s_c_addr, &len);
+      get_stats()->served_connections++;
       if(socket_client == -1)
 	{
 	  perror("accept");
@@ -55,6 +61,8 @@ void dialogueClient(int socket_client){
   int err;
   http_request request;
   int fd;
+  get_stats()->served_requests++;
+
   if((file = fdopen(socket_client,(const char *) "w+")) == NULL)
     {
       perror("fdopen");
@@ -66,7 +74,9 @@ void dialogueClient(int socket_client){
   skip_headers(file);
   request.url = rewrite_url(request.url);
   printf("[%d] url => %s\n",id_Client,request.url);
+
   if(!err){
+    get_stats()->ko_400++;
     send_response(file,400,"Bad Request","Bad Request\r\n");
   }
   else if(request.method == HTTP_UNSUPPORTED){
@@ -76,12 +86,20 @@ void dialogueClient(int socket_client){
     send_response(file,505,"HTTP Version Not Supported","HTTP Version Not Supported\r\n");
   }
   else if(forbidden(request.url) == 1){
+    get_stats()->ko_403++;
     send_response(file,403,"Forbidden","Forbidden\r\n");
   }
+  else if(strcmp(request.url,"/stats") == 0){
+    get_stats()->ok_200++;
+    printf("%d\n",get_stats()->ok_200);
+    send_stats(file);
+  }
   else if((fd = check_and_open(request.url,"../www")) == -1){
+    get_stats()->ko_404++;
     send_response(file,404,"Not Found","Page not found\r\n");
   }
   else {
+    get_stats()->ok_200++;
     send_status(file, 200, "OK");
     fprintf(file,"Content-Length: %d\r\n",get_file_size(fd));
     fprintf(file,"Content-Type: %s\r\n",get_mime_type(get_ext(request.url)));
@@ -90,6 +108,7 @@ void dialogueClient(int socket_client){
     fflush(file);
     copy(fd,fileno(file));
   }
+
   close(socket_client);
   printf("\nClient[%d] deconnecte\n",id_Client);
   exit(0);

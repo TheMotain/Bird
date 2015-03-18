@@ -33,3 +33,5 @@ int get_file_size(int fd);
 int copy(int in, int out);
 
 int forbidden(char * url);
+
+void send_stats(FILE * client);
